@@ -1,9 +1,9 @@
 import type { FC } from "react";
 import { Tabs } from "@mantine/core";
-import { IconChartPie, IconChartDonut } from "@tabler/icons-react";
+import { IconChartPie, IconChartDonut, IconList } from "@tabler/icons-react";
 import classes from "./ModeSelector.module.css";
 
-export type TModeValue = "full-graph" | "short-graph";
+export type TModeValue = "full-graph" | "short-graph" | "short-list";
 
 type TModeSelectorProps = {
   value: TModeValue;
@@ -24,6 +24,9 @@ export const ModeSelector: FC<TModeSelectorProps> = ({ value, setValue }) => {
         </Tabs.Tab>
         <Tabs.Tab value="short-graph">
           <IconChartPie width={18} height={18} />
+        </Tabs.Tab>
+        <Tabs.Tab value="short-list">
+          <IconList width={18} height={18} />
         </Tabs.Tab>
       </Tabs.List>
     </Tabs>

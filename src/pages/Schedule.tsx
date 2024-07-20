@@ -19,6 +19,8 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { NoData } from "../components/NoData";
 import { useFavorites } from "../hooks/useFavorites";
+import { ScheduleList } from "../components/Schedule/ScheduleList";
+import { getToday, getTomorrow } from "../helpers/time";
 
 export const Schedule = () => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -38,6 +40,9 @@ export const Schedule = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const todayDate = getToday();
+  const tomorrowDate = getTomorrow();
+
   function toggleFavorites() {
     toggleFavorite({ address });
     setIsFavorite(!!checkIsFavorite({ address }));
@@ -46,7 +51,7 @@ export const Schedule = () => {
   const goBack = () => navigate("/");
 
   const isDataSqueezed = useMemo(
-    () => activeTab === "short-graph",
+    () => activeTab === "short-graph" || activeTab === "short-list",
     [activeTab],
   );
 
@@ -83,10 +88,13 @@ export const Schedule = () => {
         ? isDataSqueezed
           ? squeezeScheduleData(
               schedulesByAddressData.graphs.tomorrow.hoursList,
-            )
+            ).map((entry) => ({
+              ...entry,
+              value: entry.to - entry.from,
+            }))
           : normalizeScheduleData(
               schedulesByAddressData.graphs.tomorrow.hoursList,
-            )
+            ).map((entry) => ({ ...entry, value: 1 }))
         : [],
     [schedulesByAddressData, isDataSqueezed],
   );
@@ -141,24 +149,56 @@ export const Schedule = () => {
       </Center>
 
       <Flex direction="column" align="center">
-        {schedulesByAddressData?.graphs?.today?.hoursList && (
-          <ScheduleGraph
-            data={scheduleToday}
-            markActive
-            showDurations={isDataSqueezed}
-            queue={queue}
-            colorScheme={colorScheme}
-          />
-        )}
+        {activeTab !== "short-list" &&
+          schedulesByAddressData?.graphs?.today?.hoursList && (
+            <>
+              <Center mt={8}>
+                <Text size="xl">Today: {todayDate}</Text>
+              </Center>
+              <ScheduleGraph
+                data={scheduleToday}
+                markActive
+                showDurations={isDataSqueezed}
+                queue={queue}
+                colorScheme={colorScheme}
+              />
+            </>
+          )}
 
-        {schedulesByAddressData?.graphs?.tomorrow?.hoursList && (
-          <ScheduleGraph
-            data={scheduleTomorrow}
-            queue={queue}
-            showDurations={isDataSqueezed}
-            colorScheme={colorScheme}
-          />
-        )}
+        {activeTab !== "short-list" &&
+          schedulesByAddressData?.graphs?.tomorrow?.hoursList && (
+            <>
+              <Center mt={8}>
+                <Text size="xl">Tomorrow: {tomorrowDate}</Text>
+              </Center>
+              <ScheduleGraph
+                data={scheduleTomorrow}
+                queue={queue}
+                showDurations={isDataSqueezed}
+                colorScheme={colorScheme}
+              />
+            </>
+          )}
+
+        {activeTab === "short-list" &&
+          schedulesByAddressData?.graphs?.today?.hoursList && (
+            <>
+              <Center mt={8}>
+                <Text size="xl">Today: {todayDate}</Text>
+              </Center>
+              <ScheduleList data={scheduleToday} queue={queue} />
+            </>
+          )}
+
+        {activeTab === "short-list" &&
+          schedulesByAddressData?.graphs?.tomorrow?.hoursList && (
+            <>
+              <Center mt={8}>
+                <Text size="xl">Tomorrow: {tomorrowDate}</Text>
+              </Center>
+              <ScheduleList data={scheduleTomorrow} queue={queue} />
+            </>
+          )}
 
         {isNoData && <NoData text="No data found for specified address" />}
       </Flex>
@@ -168,4 +208,4 @@ export const Schedule = () => {
 
 // TODO: handle error, maybe with toast
 // TODO: add support of fetching schedules by queue
-// TODO: consider to optimize data handling
+// TODO: consider to optimize and refactor data handling
