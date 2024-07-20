@@ -1,0 +1,40 @@
+{
+  "name": "blackouts",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mantine/charts": "^7.11.2",
+    "@mantine/core": "^7.11.2",
+    "@mantine/dates": "^7.11.2",
+    "@mantine/form": "^7.11.2",
+    "@mantine/hooks": "^7.11.2",
+    "@mantine/modals": "^7.11.2",
+    "@mantine/notifications": "^7.11.2",
+    "@mantine/nprogress": "^7.11.2",
+    "@tabler/icons-react": "^3.11.0",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.12",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.25.1",
+    "recharts": "^2.12.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "postcss": "^8.4.39",
+    "postcss-preset-mantine": "^1.16.0",
+    "postcss-simple-vars": "^7.0.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.4"
+  }
+}

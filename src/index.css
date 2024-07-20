@@ -1,0 +1,10 @@
+svg,
+path,
+g {
+  outline: none;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}

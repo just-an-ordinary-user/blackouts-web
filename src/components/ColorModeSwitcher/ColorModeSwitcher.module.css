@@ -1,0 +1,10 @@
+.icon {
+  width: 22px;
+  height: 22px;
+
+  display: none;
+}
+
+.display {
+  display: block;
+}
