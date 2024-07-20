@@ -11,15 +11,17 @@ import {
   useComputedColorScheme,
   Text,
 } from "@mantine/core";
-import { IconChevronLeft, IconStar } from "@tabler/icons-react";
+import { IconChevronLeft, IconStar, IconStarFilled } from "@tabler/icons-react";
 import {
   ModeSelector,
   type TModeValue,
 } from "../components/ModeSelector/ModeSelector";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { NoData } from "../components/NoData";
+import { useFavorites } from "../hooks/useFavorites";
 
 export const Schedule = () => {
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [address, setAddress] = useState<string>("");
   const [activeTab, setActiveTab] = useState<TModeValue>("full-graph");
 
@@ -31,8 +33,15 @@ export const Schedule = () => {
     isSchedulesByAddressLoading,
   } = useScheduleByAddress();
 
+  const { toggleFavorite, checkIsFavorite } = useFavorites();
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  function toggleFavorites() {
+    toggleFavorite({ address });
+    setIsFavorite(!!checkIsFavorite({ address }));
+  }
 
   const goBack = () => navigate("/");
 
@@ -89,10 +98,12 @@ export const Schedule = () => {
     [schedulesByAddressData],
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies(checkIsFavorite): causes effect recalling infinitely
   useEffect(() => {
     const address = searchParams.get("address");
     if (address) {
       setAddress(address);
+      setIsFavorite(!!checkIsFavorite({ address }));
       fetchSchedulesByAddress({ address });
     }
   }, [fetchSchedulesByAddress, searchParams]);
@@ -115,9 +126,13 @@ export const Schedule = () => {
           <IconChevronLeft />
         </ActionIcon>
         <ModeSelector value={activeTab} setValue={setActiveTab} />
-        {/* TODO: favorites button is not implemented yet */}
-        <ActionIcon variant="default" size="xl" aria-label="Add to favorites">
-          <IconStar />
+        <ActionIcon
+          variant="default"
+          size="xl"
+          aria-label="Add to favorites"
+          onClick={toggleFavorites}
+        >
+          {isFavorite ? <IconStarFilled /> : <IconStar />}
         </ActionIcon>
       </Flex>
 
@@ -152,6 +167,5 @@ export const Schedule = () => {
 };
 
 // TODO: handle error, maybe with toast
-// TODO: implement favorites functionality
 // TODO: add support of fetching schedules by queue
 // TODO: consider to optimize data handling

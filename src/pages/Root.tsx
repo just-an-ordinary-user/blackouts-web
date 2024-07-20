@@ -1,13 +1,13 @@
+import { Outlet } from "react-router-dom";
 import { ActionIcon, AppShell, Flex } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { IconChartDonutFilled } from "@tabler/icons-react";
 import { ColorModeSwitcher } from "../components/ColorModeSwitcher/ColorModeSwitcher";
 import { ScheduleFormModal } from "../components/ScheduleFormModal";
-import { Outlet } from "react-router-dom";
+import { useScheduleFormModalStore } from "../stores/ScheduleFormModalStore.ts";
 import iconImg from "/icon.png";
 
 export const Root = () => {
-  const [opened, { open, close }] = useDisclosure(false);
+  const { opened, open, close } = useScheduleFormModalStore();
 
   return (
     <AppShell padding="md" header={{ height: 60 }}>
