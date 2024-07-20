@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { ActionIcon, AppShell, Flex } from "@mantine/core";
 import { IconChartDonutFilled } from "@tabler/icons-react";
 import { ColorModeSwitcher } from "../components/ColorModeSwitcher/ColorModeSwitcher";
@@ -13,7 +13,9 @@ export const Root = () => {
     <AppShell padding="md" header={{ height: 60 }}>
       <AppShell.Header>
         <Flex justify="space-between" p={8}>
-          <img src={iconImg} alt="logo" width={42} />
+          <Link to="/">
+            <img src={iconImg} alt="logo" width={42} />
+          </Link>
 
           <div>
             <ActionIcon

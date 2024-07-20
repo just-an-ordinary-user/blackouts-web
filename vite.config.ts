@@ -15,6 +15,9 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: "autoUpdate",
         manifest: {
+          name: "Blackouts",
+          short_name: "blackouts",
+          description: "WebApp for monitoring power outage schedules",
           theme_color: "#000000",
           icons: [
             {
