@@ -4,6 +4,7 @@ import { IconChartDonutFilled } from "@tabler/icons-react";
 import { ColorModeSwitcher } from "../components/ColorModeSwitcher/ColorModeSwitcher";
 import { ScheduleFormModal } from "../components/ScheduleFormModal";
 import { Outlet } from "react-router-dom";
+import iconImg from "/icon.png";
 
 export const Root = () => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -12,7 +13,7 @@ export const Root = () => {
     <AppShell padding="md" header={{ height: 60 }}>
       <AppShell.Header>
         <Flex justify="space-between" p={8}>
-          <img src="/icon.png" alt="logo" width={42} />
+          <img src={iconImg} alt="logo" width={42} />
 
           <div>
             <ActionIcon

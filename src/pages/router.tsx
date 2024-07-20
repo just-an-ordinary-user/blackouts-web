@@ -4,19 +4,24 @@ import { Root } from "./Root";
 import { Home } from "./Home";
 import { Schedule } from "./Schedule";
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Root />,
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+        {
+          path: "/schedule",
+          element: <Schedule />,
+        },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <Root />,
-    children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/schedule",
-        element: <Schedule />,
-      },
-    ],
+    basename: import.meta.env.BASE_URL,
   },
-]);
+);

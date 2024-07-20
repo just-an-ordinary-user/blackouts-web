@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  VITE_BASE_URL: /blackouts-web
+  VITE_BASE_URL: /blackouts-web/
 
 jobs:
   # Single deploy job since we're just deploying
