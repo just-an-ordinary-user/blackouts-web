@@ -1,10 +1,16 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, createHashRouter } from "react-router-dom";
 
 import { Root } from "./Root";
 import { Home } from "./Home";
 import { Schedule } from "./Schedule";
 
-export const router = createBrowserRouter(
+function defineRouter() {
+  return import.meta.env.VITE_ROUTER === "hash"
+    ? createHashRouter
+    : createBrowserRouter;
+}
+
+export const router = defineRouter()(
   [
     {
       path: "/",
@@ -22,6 +28,9 @@ export const router = createBrowserRouter(
     },
   ],
   {
-    basename: import.meta.env.BASE_URL,
+    basename:
+      import.meta.env.VITE_ROUTER !== "hash"
+        ? import.meta.env.BASE_URL
+        : undefined,
   },
 );

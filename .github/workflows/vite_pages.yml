@@ -22,6 +22,7 @@ concurrency:
 
 env:
   VITE_BASE_URL: /blackouts-web/
+  VITE_ROUTER: hash
 
 jobs:
   # Single deploy job since we're just deploying

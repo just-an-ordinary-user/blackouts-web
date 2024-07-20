@@ -3,6 +3,7 @@ import { IconChartDonutFilled, IconChevronRight } from "@tabler/icons-react";
 import { Box, Button, Flex, NavLink, Title } from "@mantine/core";
 import { useFavorites } from "../hooks/useFavorites";
 import { useScheduleFormModalStore } from "../stores/ScheduleFormModalStore";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
   const { open } = useScheduleFormModalStore();
@@ -12,7 +13,8 @@ export const Home = () => {
 
   const items = data.map((item) => (
     <NavLink
-      href={`/schedule?address=${item}`}
+      component={Link}
+      to={`/schedule?address=${item}`}
       key={item}
       label={item.split(",", 1)[0]}
       description={item.split(",").slice(1).join(", ")}
