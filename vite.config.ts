@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         registerType: "autoUpdate",
         manifest: {
           name: "Blackouts",
-          short_name: "blackouts",
+          short_name: "Blackouts",
           description: "WebApp for monitoring power outage schedules",
           theme_color: "#000000",
           icons: [
