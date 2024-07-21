@@ -1,31 +1,29 @@
 import { useEffect, useMemo, useState } from "react";
 import { useScheduleByAddress } from "../api-hooks/useScheduleByAddress";
-import { squeezeScheduleData } from "../helpers/squeezeScheduleData";
-import { normalizeScheduleData } from "../helpers/normalizeScheduleData";
-import { ScheduleGraph } from "../components/Schedule/ScheduleGraph";
 import {
   ActionIcon,
-  Center,
   Flex,
   LoadingOverlay,
   useComputedColorScheme,
-  Text,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { IconChevronLeft, IconStar, IconStarFilled } from "@tabler/icons-react";
 import {
   ModeSelector,
   type TModeValue,
 } from "../components/ModeSelector/ModeSelector";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { NoData } from "../components/NoData";
+import { SelectQueueModal } from "../components/SelectQueueModal";
+import { ScheduleView } from "../components/ScheduleView";
+import { useScheduleByQueue } from "../api-hooks/useScheduleByQueue";
 import { useFavorites } from "../hooks/useFavorites";
-import { ScheduleList } from "../components/Schedule/ScheduleList";
-import { getToday, getTomorrow } from "../helpers/time";
 
 export const Schedule = () => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [address, setAddress] = useState<string>("");
   const [activeTab, setActiveTab] = useState<TModeValue>("full-graph");
+  const [queues, setQueues] = useState<string[]>([]);
+  const [opened, { open, close }] = useDisclosure();
 
   const colorScheme = useComputedColorScheme();
 
@@ -34,14 +32,16 @@ export const Schedule = () => {
     schedulesByAddressData,
     isSchedulesByAddressLoading,
   } = useScheduleByAddress();
+  const {
+    fetchSchedulesByQueue,
+    schedulesByQueueData,
+    isSchedulesByQueueLoading,
+  } = useScheduleByQueue();
 
   const { toggleFavorite, checkIsFavorite } = useFavorites();
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
-  const todayDate = getToday();
-  const tomorrowDate = getTomorrow();
 
   function toggleFavorites() {
     toggleFavorite({ address });
@@ -65,61 +65,48 @@ export const Schedule = () => {
     [schedulesByAddressData],
   );
 
-  const scheduleToday = useMemo(
-    () =>
-      schedulesByAddressData?.graphs?.today?.hoursList
-        ? isDataSqueezed
-          ? squeezeScheduleData(
-              schedulesByAddressData.graphs.today.hoursList,
-            ).map((entry) => ({
-              ...entry,
-              value: entry.to - entry.from,
-            }))
-          : normalizeScheduleData(
-              schedulesByAddressData.graphs.today.hoursList,
-            ).map((entry) => ({ ...entry, value: 1 }))
-        : [],
-    [schedulesByAddressData, isDataSqueezed],
-  );
+  const todayScheduleData = useMemo(() => {
+    return (
+      schedulesByAddressData?.graphs?.today?.hoursList ||
+      schedulesByQueueData?.graphs?.today?.hoursList
+    );
+  }, [schedulesByAddressData, schedulesByQueueData]);
 
-  const scheduleTomorrow = useMemo(
-    () =>
-      schedulesByAddressData?.graphs?.tomorrow?.hoursList
-        ? isDataSqueezed
-          ? squeezeScheduleData(
-              schedulesByAddressData.graphs.tomorrow.hoursList,
-            ).map((entry) => ({
-              ...entry,
-              value: entry.to - entry.from,
-            }))
-          : normalizeScheduleData(
-              schedulesByAddressData.graphs.tomorrow.hoursList,
-            ).map((entry) => ({ ...entry, value: 1 }))
-        : [],
-    [schedulesByAddressData, isDataSqueezed],
-  );
+  const tomorrowScheduleData = useMemo(() => {
+    return (
+      schedulesByAddressData?.graphs?.tomorrow?.hoursList ||
+      schedulesByQueueData?.graphs?.tomorrow?.hoursList
+    );
+  }, [schedulesByAddressData, schedulesByQueueData]);
 
-  const isNoData = useMemo(
-    () =>
-      !schedulesByAddressData?.graphs?.today?.hoursList.length &&
-      !schedulesByAddressData?.graphs?.tomorrow?.hoursList.length,
-    [schedulesByAddressData],
-  );
+  useEffect(() => {
+    if (
+      schedulesByAddressData?.current?.hasQueue === "many" &&
+      schedulesByAddressData?.current?.possibleQueues?.length
+    ) {
+      setQueues(schedulesByAddressData.current.possibleQueues);
+      open();
+    }
+  }, [schedulesByAddressData, open]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies(checkIsFavorite): causes effect recalling infinitely
   useEffect(() => {
     const address = searchParams.get("address");
-    if (address) {
+    const queue = searchParams.get("queue");
+    if (queue) {
+      fetchSchedulesByQueue({ queue });
+      address && setAddress(address);
+    } else if (address) {
       setAddress(address);
       setIsFavorite(!!checkIsFavorite({ address }));
       fetchSchedulesByAddress({ address });
     }
-  }, [fetchSchedulesByAddress, searchParams]);
+  }, [fetchSchedulesByAddress, fetchSchedulesByQueue, searchParams]);
 
   return (
     <div>
       <LoadingOverlay
-        visible={isSchedulesByAddressLoading}
+        visible={isSchedulesByAddressLoading || isSchedulesByQueueLoading}
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
@@ -144,68 +131,29 @@ export const Schedule = () => {
         </ActionIcon>
       </Flex>
 
-      <Center mt={8}>
-        <Text size="xl">{address}</Text>
-      </Center>
+      <ScheduleView
+        activeView={activeTab}
+        colorScheme={colorScheme}
+        isDataSqueezed={isDataSqueezed}
+        queue={queue}
+        address={address}
+        todayScheduleData={todayScheduleData}
+        tomorrowScheduleData={tomorrowScheduleData}
+        isDataPresent={
+          !!schedulesByAddressData?.graphs || !!schedulesByQueueData?.graphs
+        }
+      />
 
-      <Flex direction="column" align="center">
-        {activeTab !== "short-list" &&
-          schedulesByAddressData?.graphs?.today?.hoursList && (
-            <>
-              <Center mt={8}>
-                <Text size="xl">Today: {todayDate}</Text>
-              </Center>
-              <ScheduleGraph
-                data={scheduleToday}
-                markActive
-                showDurations={isDataSqueezed}
-                queue={queue}
-                colorScheme={colorScheme}
-              />
-            </>
-          )}
-
-        {activeTab !== "short-list" &&
-          schedulesByAddressData?.graphs?.tomorrow?.hoursList && (
-            <>
-              <Center mt={8}>
-                <Text size="xl">Tomorrow: {tomorrowDate}</Text>
-              </Center>
-              <ScheduleGraph
-                data={scheduleTomorrow}
-                queue={queue}
-                showDurations={isDataSqueezed}
-                colorScheme={colorScheme}
-              />
-            </>
-          )}
-
-        {activeTab === "short-list" &&
-          schedulesByAddressData?.graphs?.today?.hoursList && (
-            <>
-              <Center mt={8}>
-                <Text size="xl">Today: {todayDate}</Text>
-              </Center>
-              <ScheduleList data={scheduleToday} queue={queue} />
-            </>
-          )}
-
-        {activeTab === "short-list" &&
-          schedulesByAddressData?.graphs?.tomorrow?.hoursList && (
-            <>
-              <Center mt={8}>
-                <Text size="xl">Tomorrow: {tomorrowDate}</Text>
-              </Center>
-              <ScheduleList data={scheduleTomorrow} queue={queue} />
-            </>
-          )}
-
-        {isNoData && <NoData text="No data found for specified address" />}
-      </Flex>
+      <SelectQueueModal
+        opened={opened}
+        open={open}
+        close={close}
+        address={address}
+        queues={queues}
+      />
     </div>
   );
 };
 
 // TODO: handle error, maybe with toast
-// TODO: add support of fetching schedules by queue
 // TODO: consider to optimize and refactor data handling

@@ -45,6 +45,9 @@ export default defineConfig(({ mode }) => {
         devOptions: {
           enabled: true,
         },
+        workbox: {
+          disableDevLogs: true,
+        },
       }),
     ],
     base: baseUrl,

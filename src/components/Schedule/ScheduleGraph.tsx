@@ -3,6 +3,7 @@ import type { ActiveShape } from "recharts/types/util/types";
 import type { PieSectorDataItem } from "recharts/types/polar/Pie";
 import { useMemo, type FC } from "react";
 import { Cell, Label, Pie, PieChart, Sector } from "recharts";
+import { NoData } from "../NoData";
 
 type TScheduleItemAdditionalFields = {
   value: number;
@@ -136,36 +137,44 @@ export const ScheduleGraph: FC<TScheduleProps> = ({
 
   return (
     <div>
-      <PieChart width={380} height={380} style={{ outline: "none" }}>
-        <Pie
-          data={schedule}
-          cx="50%"
-          cy="50%"
-          innerRadius={70}
-          outerRadius={170}
-          labelLine={false}
-          stroke=""
-          dataKey="value"
-          nameKey="hours"
-          startAngle={90}
-          endAngle={-360}
-          paddingAngle={2}
-          label={renderCustomizedLabel}
-          activeIndex={activeIndex}
-          activeShape={renderActiveShape as ActiveShape<PieSectorDataItem>}
-          isAnimationActive={!!colorScheme}
-        >
-          {data.map((entry) => (
-            <Cell key={`cell-${entry.hour}`} fill={COLORS[entry.electricity]} />
-          ))}
-          <Label
-            value={queue}
-            position="center"
-            fontSize={32}
-            fontWeight="bold"
-          />
-        </Pie>
-      </PieChart>
+      {schedule?.length > 0 && (
+        <PieChart width={380} height={380} style={{ outline: "none" }}>
+          <Pie
+            data={schedule}
+            cx="50%"
+            cy="50%"
+            innerRadius={70}
+            outerRadius={170}
+            labelLine={false}
+            stroke=""
+            dataKey="value"
+            nameKey="hours"
+            startAngle={90}
+            endAngle={-360}
+            paddingAngle={2}
+            label={renderCustomizedLabel}
+            activeIndex={activeIndex}
+            activeShape={renderActiveShape as ActiveShape<PieSectorDataItem>}
+            isAnimationActive={!!colorScheme}
+          >
+            {data.map((entry) => (
+              <Cell
+                key={`cell-${entry.hour}`}
+                fill={COLORS[entry.electricity]}
+              />
+            ))}
+            <Label
+              value={queue}
+              position="center"
+              fontSize={32}
+              fontWeight="bold"
+            />
+          </Pie>
+        </PieChart>
+      )}
+      {schedule?.length === 0 && (
+        <NoData text="No data found for specified period" />
+      )}
     </div>
   );
 };

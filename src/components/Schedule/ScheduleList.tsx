@@ -1,6 +1,7 @@
 import { useMemo, type FC } from "react";
 import type { TScheduleNormalizedItem } from "../../types/Response";
 import { Flex, Text } from "@mantine/core";
+import { NoData } from "../NoData";
 
 type TScheduleList = {
   data: TScheduleNormalizedItem[];
@@ -37,25 +38,29 @@ export const ScheduleList: FC<TScheduleList> = ({ data }) => {
 
   return (
     <Flex direction="column">
-      <Flex gap={8}>
-        <Text size="lg">Electricity available at:</Text>{" "}
-        <Text size="lg" style={{ color: COLORS[0], fontWeight: "bold" }}>
-          {availableData}
-        </Text>
-      </Flex>
-      <Flex gap={8}>
-        <Text size="lg">Electricity unavailable at:</Text>{" "}
-        <Text size="lg" style={{ color: COLORS[1], fontWeight: "bold" }}>
-          {unavailableData}
-        </Text>
-      </Flex>
-      {undefinedData.length > 0 && (
-        <Flex gap={8}>
-          <Text size="lg">Electricity undefined at:</Text>{" "}
-          <Text size="lg" style={{ color: COLORS[2], fontWeight: "bold" }}>
-            {undefinedData}
-          </Text>
-        </Flex>
+      {data?.length > 0 && (
+        <>
+          <Flex gap={8} justify="center">
+            <Text size="lg" style={{ color: COLORS[0], fontWeight: "bold" }}>
+              {availableData}
+            </Text>
+          </Flex>
+          <Flex gap={8} justify="center">
+            <Text size="lg" style={{ color: COLORS[1], fontWeight: "bold" }}>
+              {unavailableData}
+            </Text>
+          </Flex>
+          {undefinedData.length > 0 && (
+            <Flex gap={8} justify="center">
+              <Text size="lg" style={{ color: COLORS[2], fontWeight: "bold" }}>
+                {undefinedData}
+              </Text>
+            </Flex>
+          )}
+        </>
+      )}
+      {data?.length === 0 && (
+        <NoData text="No data found for specified period" />
       )}
     </Flex>
   );
