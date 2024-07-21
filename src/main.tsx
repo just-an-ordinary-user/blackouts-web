@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MantineProvider } from "@mantine/core";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./pages/router.tsx";
+import "./i18n.ts";
 
 const queryClient = new QueryClient();
 

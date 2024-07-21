@@ -7,6 +7,7 @@ import { NoData } from "./NoData";
 import { getToday, getTomorrow } from "../helpers/time";
 import { squeezeScheduleData } from "../helpers/squeezeScheduleData";
 import { normalizeScheduleData } from "../helpers/normalizeScheduleData";
+import { useTranslation } from "react-i18next";
 
 type TScheduleViewProps = {
   address?: string;
@@ -33,6 +34,7 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
   todayPublishedAt,
   tomorrowPublishedAt,
 }) => {
+  const { t } = useTranslation();
   const todayDate = getToday();
   const tomorrowDate = getTomorrow();
 
@@ -81,7 +83,9 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
           {activeView !== "short-list" && (
             <>
               <Center mt={8}>
-                <Text size="xl">Today: {todayDate}</Text>
+                <Text size="xl">
+                  {t("today_label")}: {todayDate}
+                </Text>
               </Center>
               <ScheduleGraph
                 data={scheduleToday}
@@ -92,7 +96,9 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
               />
               {todayPublishedAt && (
                 <Center mt={8}>
-                  <Text size="sm">Published at: {todayPublishedAt}</Text>
+                  <Text size="sm">
+                    {t("published_label")}: {todayPublishedAt}
+                  </Text>
                 </Center>
               )}
             </>
@@ -101,7 +107,9 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
           {activeView !== "short-list" && (
             <>
               <Center mt={32}>
-                <Text size="xl">Tomorrow: {tomorrowDate}</Text>
+                <Text size="xl">
+                  {t("tomorrow_label")}: {tomorrowDate}
+                </Text>
               </Center>
               <ScheduleGraph
                 data={scheduleTomorrow}
@@ -111,7 +119,9 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
               />
               {tomorrowPublishedAt && (
                 <Center mt={8}>
-                  <Text size="sm">Published at: {tomorrowPublishedAt}</Text>
+                  <Text size="sm">
+                    {t("published_label")}: {tomorrowPublishedAt}
+                  </Text>
                 </Center>
               )}
             </>
@@ -120,12 +130,16 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
           {activeView === "short-list" && (
             <>
               <Center mt={8}>
-                <Text size="xl">Today: {todayDate}</Text>
+                <Text size="xl">
+                  {t("today_label")}: {todayDate}
+                </Text>
               </Center>
               <ScheduleList data={scheduleToday} queue={queue} />
               {todayPublishedAt && (
                 <Center mt={8}>
-                  <Text size="sm">Published at: {todayPublishedAt}</Text>
+                  <Text size="sm">
+                    {t("published_label")}: {todayPublishedAt}
+                  </Text>
                 </Center>
               )}
             </>
@@ -134,19 +148,23 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
           {activeView === "short-list" && (
             <>
               <Center mt={32}>
-                <Text size="xl">Tomorrow: {tomorrowDate}</Text>
+                <Text size="xl">
+                  {t("tomorrow_label")}: {tomorrowDate}
+                </Text>
               </Center>
               <ScheduleList data={scheduleTomorrow} queue={queue} />
               {tomorrowPublishedAt && (
                 <Center mt={8}>
-                  <Text size="sm">Published at: {tomorrowPublishedAt}</Text>
+                  <Text size="sm">
+                    {t("published_label")}: {tomorrowPublishedAt}
+                  </Text>
                 </Center>
               )}
             </>
           )}
         </Flex>
       )}
-      {!isDataPresent && <NoData text="No data found for specified address" />}
+      {!isDataPresent && <NoData text={t("no_data_for_address_label")} />}
     </>
   );
 };

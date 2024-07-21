@@ -5,6 +5,7 @@ import { ColorModeSwitcher } from "../components/ColorModeSwitcher/ColorModeSwit
 import { ScheduleFormModal } from "../components/ScheduleFormModal";
 import { useScheduleFormModalStore } from "../stores/ScheduleFormModalStore.ts";
 import iconImg from "/icon.png";
+import { LanguageSelector } from "../components/LanguageSelector.tsx";
 
 export const Root = () => {
   const { opened, open, close } = useScheduleFormModalStore();
@@ -27,6 +28,7 @@ export const Root = () => {
             >
               <IconChartDonutFilled stroke={1.5} />
             </ActionIcon>
+            <LanguageSelector />
             <ColorModeSwitcher />
           </div>
         </Flex>

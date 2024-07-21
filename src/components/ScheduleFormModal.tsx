@@ -2,6 +2,7 @@ import type { FC } from "react";
 import { Modal, Button, TextInput, Flex } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type TFormData = {
   city: string;
@@ -19,14 +20,24 @@ export const ScheduleFormModal: FC<TScheduleFormModalProps> = ({
   opened,
   close,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const form = useForm({
     mode: "uncontrolled",
     initialValues: { city: "", address: "", nob: "" },
     validate: {
-      city: (value) => (!value.length ? "Field City is required" : null),
-      address: (value) => (!value.length ? "Field Address is required" : null),
-      nob: (value) => (!value.length ? "Field Number is required" : null),
+      city: (value) =>
+        !value.length
+          ? t("required_field_label", { field: t("city_label") })
+          : null,
+      address: (value) =>
+        !value.length
+          ? t("required_field_label", { field: t("address_label") })
+          : null,
+      nob: (value) =>
+        !value.length
+          ? t("required_field_label", { field: t("nob_label") })
+          : null,
     },
   });
 
@@ -38,12 +49,12 @@ export const ScheduleFormModal: FC<TScheduleFormModalProps> = ({
     <Modal
       opened={opened}
       onClose={close}
-      title="Get graphs by address"
+      title={t("get_graphs_title")}
       transitionProps={{ transition: "slide-up" }}
     >
       <form onSubmit={form.onSubmit(goToSchedule)}>
         <TextInput
-          placeholder="City"
+          placeholder={t("city_label")}
           key={form.key("city")}
           {...form.getInputProps("city")}
         />
@@ -51,20 +62,20 @@ export const ScheduleFormModal: FC<TScheduleFormModalProps> = ({
           <TextInput
             mt="sm"
             style={{ width: "100%" }}
-            placeholder="Address"
+            placeholder={t("address_label")}
             key={form.key("address")}
             {...form.getInputProps("address")}
           />
           <TextInput
             mt="sm"
             style={{ width: 120 }}
-            placeholder="No"
+            placeholder={t("nob_label")}
             key={form.key("nob")}
             {...form.getInputProps("nob")}
           />
         </Flex>
         <Button type="submit" mt="sm">
-          Submit
+          {t("submit_button")}
         </Button>
       </form>
     </Modal>

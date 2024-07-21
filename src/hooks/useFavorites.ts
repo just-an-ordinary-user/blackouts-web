@@ -1,4 +1,4 @@
-const STORAGE_KEY = "temno_data";
+const STORAGE_KEY = "blackouts_data";
 
 function getStorage() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") as TStorageType;

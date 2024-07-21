@@ -1,0 +1,17 @@
+{
+    "addresses_title": "Addresses",
+    "get_graphs_button": "Get graphs",
+    "no_data_label": "No data",
+    "no_data_for_period_label": "No data found for specified period",
+    "no_data_for_address_label": "No data found for specified address",
+    "get_graphs_title": "Get graphs",
+    "city_label": "City",
+    "address_label": "Address",
+    "nob_label": "No",
+    "submit_button": "Search",
+    "multiple_queues_label": "There is multiple queues for address",
+    "today_label": "Today",
+    "tomorrow_label": "Tomorrow",
+    "published_label": "Published at",
+    "required_field_label": "Field {{field}} is required"
+}

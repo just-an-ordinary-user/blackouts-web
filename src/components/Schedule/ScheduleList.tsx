@@ -2,6 +2,7 @@ import { useMemo, type FC } from "react";
 import type { TScheduleNormalizedItem } from "../../types/Response";
 import { Flex, Text } from "@mantine/core";
 import { NoData } from "../NoData";
+import { useTranslation } from "react-i18next";
 
 type TScheduleList = {
   data: TScheduleNormalizedItem[];
@@ -11,6 +12,7 @@ type TScheduleList = {
 const COLORS = ["#00C49F", "#ff5542", "#FFBB28"];
 
 export const ScheduleList: FC<TScheduleList> = ({ data }) => {
+  const { t } = useTranslation();
   const availableData = useMemo(
     () =>
       data
@@ -59,9 +61,7 @@ export const ScheduleList: FC<TScheduleList> = ({ data }) => {
           )}
         </>
       )}
-      {data?.length === 0 && (
-        <NoData text="No data found for specified period" />
-      )}
+      {data?.length === 0 && <NoData text={t("no_data_for_period_label")} />}
     </Flex>
   );
 };

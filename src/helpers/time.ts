@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 export function getToday() {
-  return dayjs().format("YYYY-MM-DD");
+  return dayjs().format("DD-MM-YYYY");
 }
 
 export function getTomorrow() {
@@ -10,5 +10,5 @@ export function getTomorrow() {
     .set("minute", 0)
     .set("second", 0)
     .add(1, "day")
-    .format("YYYY-MM-DD");
+    .format("DD-MM-YYYY");
 }

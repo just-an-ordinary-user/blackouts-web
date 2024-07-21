@@ -4,6 +4,7 @@ import type { PieSectorDataItem } from "recharts/types/polar/Pie";
 import { useMemo, type FC } from "react";
 import { Cell, Label, Pie, PieChart, Sector } from "recharts";
 import { NoData } from "../NoData";
+import { useTranslation } from "react-i18next";
 
 type TScheduleItemAdditionalFields = {
   value: number;
@@ -115,6 +116,7 @@ export const ScheduleGraph: FC<TScheduleProps> = ({
   markActive = false,
   showDurations = false,
 }) => {
+  const { t } = useTranslation();
   const activeIndex = useMemo(() => {
     if (!markActive) {
       return -1;
@@ -173,7 +175,7 @@ export const ScheduleGraph: FC<TScheduleProps> = ({
         </PieChart>
       )}
       {schedule?.length === 0 && (
-        <NoData text="No data found for specified period" />
+        <NoData text={t("no_data_for_period_label")} />
       )}
     </div>
   );

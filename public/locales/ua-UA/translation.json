@@ -1,0 +1,17 @@
+{
+    "addresses_title": "Адреси",
+    "get_graphs_button": "Отримати графіки",
+    "no_data_label": "Немає даних",
+    "no_data_for_period_label": "Немає даних за вказаний період",
+    "no_data_for_address_label": "Немає даних за вказаною адресою",
+    "get_graphs_title": "Отримати графіки",
+    "city_label": "Місто",
+    "address_label": "Адреса",
+    "nob_label": "№",
+    "submit_button": "Знайти",
+    "multiple_queues_label": "Вказана адреса підпадає під кілька черг",
+    "today_label": "Сьогодні",
+    "tomorrow_label": "Завтра",
+    "published_label": "Опубліковано",
+    "required_field_label": "Поле {{field}} обов'язкове"
+}

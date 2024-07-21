@@ -4,8 +4,10 @@ import { Box, Button, Flex, NavLink, Title } from "@mantine/core";
 import { useFavorites } from "../hooks/useFavorites";
 import { useScheduleFormModalStore } from "../stores/ScheduleFormModalStore";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const Home = () => {
+  const { t } = useTranslation();
   const { open } = useScheduleFormModalStore();
   const { getStorage } = useFavorites();
 
@@ -24,7 +26,7 @@ export const Home = () => {
 
   return (
     <Flex direction="column">
-      <Title order={3}>Addresses</Title>
+      <Title order={3}>{t("addresses_title")}</Title>
       {data.length > 0 && <Box>{items}</Box>}
       {data.length === 0 && (
         <NoData>
@@ -35,7 +37,7 @@ export const Home = () => {
             leftSection={<IconChartDonutFilled stroke={1.5} />}
             onClick={open}
           >
-            Get graphs
+            {t("get_graphs_button")}
           </Button>
         </NoData>
       )}

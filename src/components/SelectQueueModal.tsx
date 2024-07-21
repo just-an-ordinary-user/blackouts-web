@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { Modal, Flex, Badge, Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type TSelectQueueModalProps = {
   opened: boolean;
@@ -16,6 +17,7 @@ export const SelectQueueModal: FC<TSelectQueueModalProps> = ({
   address,
   queues,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   function goToSchedule(queue: string) {
@@ -28,7 +30,7 @@ export const SelectQueueModal: FC<TSelectQueueModalProps> = ({
       onClose={close}
       transitionProps={{ transition: "slide-up" }}
     >
-      <Text size="xl">There is multiple queues for address</Text>
+      <Text size="xl">{t("multiple_queues_label")}</Text>
       <Text size="xl">"{address}"</Text>
       <Flex gap={8} mt="lg">
         {queues.map((queue) => (
