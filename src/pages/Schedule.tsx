@@ -142,6 +142,14 @@ export const Schedule = () => {
         isDataPresent={
           !!schedulesByAddressData?.graphs || !!schedulesByQueueData?.graphs
         }
+        todayPublishedAt={
+          schedulesByAddressData?.graphs?.today?.scheduleApprovedSince ||
+          schedulesByQueueData?.graphs?.today?.scheduleApprovedSince
+        }
+        tomorrowPublishedAt={
+          schedulesByAddressData?.graphs?.tomorrow?.scheduleApprovedSince ||
+          schedulesByQueueData?.graphs?.tomorrow?.scheduleApprovedSince
+        }
       />
 
       <SelectQueueModal
@@ -157,3 +165,4 @@ export const Schedule = () => {
 
 // TODO: handle error, maybe with toast
 // TODO: consider to optimize and refactor data handling
+// TODO: ScheduleView accepts to much props. Needs to be reduced with passion all data together as it is or use zustand

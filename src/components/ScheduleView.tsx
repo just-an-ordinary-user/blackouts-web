@@ -17,6 +17,8 @@ type TScheduleViewProps = {
   tomorrowScheduleData?: TScheduleItem[];
   colorScheme: "dark" | "light";
   isDataPresent: boolean;
+  todayPublishedAt?: string;
+  tomorrowPublishedAt?: string;
 };
 
 export const ScheduleView: FC<TScheduleViewProps> = ({
@@ -28,6 +30,8 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
   tomorrowScheduleData,
   colorScheme,
   isDataPresent,
+  todayPublishedAt,
+  tomorrowPublishedAt,
 }) => {
   const todayDate = getToday();
   const tomorrowDate = getTomorrow();
@@ -86,12 +90,17 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
                 queue={queue}
                 colorScheme={colorScheme}
               />
+              {todayPublishedAt && (
+                <Center mt={8}>
+                  <Text size="sm">Published at: {todayPublishedAt}</Text>
+                </Center>
+              )}
             </>
           )}
 
           {activeView !== "short-list" && (
             <>
-              <Center mt={8}>
+              <Center mt={32}>
                 <Text size="xl">Tomorrow: {tomorrowDate}</Text>
               </Center>
               <ScheduleGraph
@@ -100,6 +109,11 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
                 showDurations={isDataSqueezed}
                 colorScheme={colorScheme}
               />
+              {tomorrowPublishedAt && (
+                <Center mt={8}>
+                  <Text size="sm">Published at: {tomorrowPublishedAt}</Text>
+                </Center>
+              )}
             </>
           )}
 
@@ -109,15 +123,25 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
                 <Text size="xl">Today: {todayDate}</Text>
               </Center>
               <ScheduleList data={scheduleToday} queue={queue} />
+              {todayPublishedAt && (
+                <Center mt={8}>
+                  <Text size="sm">Published at: {todayPublishedAt}</Text>
+                </Center>
+              )}
             </>
           )}
 
           {activeView === "short-list" && (
             <>
-              <Center mt={8}>
+              <Center mt={32}>
                 <Text size="xl">Tomorrow: {tomorrowDate}</Text>
               </Center>
               <ScheduleList data={scheduleTomorrow} queue={queue} />
+              {tomorrowPublishedAt && (
+                <Center mt={8}>
+                  <Text size="sm">Published at: {tomorrowPublishedAt}</Text>
+                </Center>
+              )}
             </>
           )}
         </Flex>
