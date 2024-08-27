@@ -5,9 +5,9 @@ export function normalizeScheduleData(
 ): TScheduleNormalizedItem[] {
   return data.map((entry) => ({
     ...entry,
-    hour: +entry.hour,
-    hours: `${+entry.hour - 1}-${entry.hour}`,
-    from: +entry.hour - 1,
-    to: +entry.hour,
+    hour: entry.hour,
+    hours: entry.hour,
+    from: +entry.hour.split("-")[0],
+    to: +entry.hour.split("-")[1],
   }));
 }

@@ -165,4 +165,4 @@ export const Schedule = () => {
 
 // TODO: handle error, maybe with toast
 // TODO: consider to optimize and refactor data handling
-// TODO: ScheduleView accepts to much props. Needs to be reduced with passion all data together as it is or use zustand
+// TODO: ScheduleView accepts to much props. Needs to be reduced with passing all data together as it is or use zustand

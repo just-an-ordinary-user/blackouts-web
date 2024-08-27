@@ -1,5 +1,5 @@
 export type TScheduleItem = {
-  hour: number;
+  hour: string;
   electricity: number;
 };
 
