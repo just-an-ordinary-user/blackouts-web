@@ -56,14 +56,22 @@ export const Schedule = () => {
   );
 
   const queue = useMemo(() => {
-    const queue = schedulesByAddressData?.current.queue || 0;
-    const subqueue = schedulesByAddressData?.current.subqueue || 0;
+    const queue =
+      schedulesByQueueData?.current.queue ||
+      schedulesByAddressData?.current.queue ||
+      0;
+    const subqueue =
+      schedulesByQueueData?.current.subqueue ||
+      schedulesByAddressData?.current.subqueue ||
+      0;
+
+    console.log(queue, subqueue);
 
     if (queue >= 0 && subqueue >= 0) {
       return queue + subqueue * 0.1;
     }
     return -1;
-  }, [schedulesByAddressData]);
+  }, [schedulesByAddressData, schedulesByQueueData]);
 
   const todayScheduleData = useMemo(() => {
     return (

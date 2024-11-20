@@ -43,7 +43,7 @@ export const ScheduleList: FC<TScheduleList> = ({ data, queue }) => {
       {data?.length > 0 && (
         <>
           <Flex gap={8} justify="center">
-            <Text size="lg">
+            <Text size="md">
               {t("queue")}: {queue}
             </Text>
           </Flex>
