@@ -55,15 +55,15 @@ export const Schedule = () => {
     [activeTab],
   );
 
-  const queue = useMemo(
-    () =>
-      schedulesByAddressData?.current.queue &&
-      schedulesByAddressData?.current.subqueue
-        ? schedulesByAddressData?.current.queue +
-          schedulesByAddressData?.current.subqueue * 0.1
-        : -1,
-    [schedulesByAddressData],
-  );
+  const queue = useMemo(() => {
+    const queue = schedulesByAddressData?.current.queue || 0;
+    const subqueue = schedulesByAddressData?.current.subqueue || 0;
+
+    if (queue >= 0 && subqueue >= 0) {
+      return queue + subqueue * 0.1;
+    }
+    return -1;
+  }, [schedulesByAddressData]);
 
   const todayScheduleData = useMemo(() => {
     return (

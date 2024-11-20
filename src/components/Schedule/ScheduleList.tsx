@@ -11,7 +11,7 @@ type TScheduleList = {
 
 const COLORS = ["#00C49F", "#ff5542", "#FFBB28"];
 
-export const ScheduleList: FC<TScheduleList> = ({ data }) => {
+export const ScheduleList: FC<TScheduleList> = ({ data, queue }) => {
   const { t } = useTranslation();
   const availableData = useMemo(
     () =>
@@ -42,6 +42,11 @@ export const ScheduleList: FC<TScheduleList> = ({ data }) => {
     <Flex direction="column">
       {data?.length > 0 && (
         <>
+          <Flex gap={8} justify="center">
+            <Text size="lg">
+              {t("queue")}: {queue}
+            </Text>
+          </Flex>
           <Flex gap={8} justify="center">
             <Text size="lg" style={{ color: COLORS[0], fontWeight: "bold" }}>
               {availableData}

@@ -13,5 +13,6 @@
     "today_label": "Сьогодні",
     "tomorrow_label": "Завтра",
     "published_label": "Опубліковано",
-    "required_field_label": "Поле {{field}} обов'язкове"
+    "required_field_label": "Поле {{field}} обов'язкове",
+    "queue": "Черга"
 }

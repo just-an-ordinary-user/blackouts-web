@@ -13,5 +13,6 @@
     "today_label": "Today",
     "tomorrow_label": "Tomorrow",
     "published_label": "Published at",
-    "required_field_label": "Field {{field}} is required"
+    "required_field_label": "Field {{field}} is required",
+    "queue": "Queue"
 }
