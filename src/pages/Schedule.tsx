@@ -4,10 +4,18 @@ import {
   ActionIcon,
   Flex,
   LoadingOverlay,
+  Menu,
+  rem,
   useComputedColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconChevronLeft, IconStar, IconStarFilled } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconStar,
+  IconStarFilled,
+  IconCloudStar,
+  IconDevicesStar,
+} from "@tabler/icons-react";
 import {
   ModeSelector,
   type TModeValue,
@@ -17,9 +25,15 @@ import { SelectQueueModal } from "../components/SelectQueueModal";
 import { ScheduleView } from "../components/ScheduleView";
 import { useScheduleByQueue } from "../api-hooks/useScheduleByQueue";
 import { useFavorites } from "../hooks/useFavorites";
+import { useUserStore } from "../stores/UserStore";
+import { useCloudFavorites } from "../hooks/useCloudFavorites";
+import { useTranslation } from "react-i18next";
 
 export const Schedule = () => {
+  const { t } = useTranslation();
+  const { user } = useUserStore();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isCloudFavorite, setIsCloudFavorite] = useState<boolean>(false);
   const [address, setAddress] = useState<string>("");
   const [activeTab, setActiveTab] = useState<TModeValue>("full-graph");
   const [queues, setQueues] = useState<string[]>([]);
@@ -39,13 +53,19 @@ export const Schedule = () => {
   } = useScheduleByQueue();
 
   const { toggleFavorite, checkIsFavorite } = useFavorites();
+  const { getCloudFavorite, toggleCloudFavorite } = useCloudFavorites();
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  function toggleFavorites() {
+  function toggleLocalFavorites() {
     toggleFavorite({ address });
     setIsFavorite(!!checkIsFavorite({ address }));
+  }
+
+  async function toggleCloudFavorites() {
+    await toggleCloudFavorite(address);
+    setIsCloudFavorite(!!(await getCloudFavorite(address)));
   }
 
   const goBack = () => navigate("/");
@@ -64,8 +84,6 @@ export const Schedule = () => {
       schedulesByQueueData?.current.subqueue ||
       schedulesByAddressData?.current.subqueue ||
       0;
-
-    console.log(queue, subqueue);
 
     if (queue >= 0 && subqueue >= 0) {
       return queue + subqueue * 0.1;
@@ -97,7 +115,6 @@ export const Schedule = () => {
     }
   }, [schedulesByAddressData, open]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies(checkIsFavorite): causes effect recalling infinitely
   useEffect(() => {
     const address = searchParams.get("address");
     const queue = searchParams.get("queue");
@@ -110,6 +127,21 @@ export const Schedule = () => {
       fetchSchedulesByAddress({ address });
     }
   }, [fetchSchedulesByAddress, fetchSchedulesByQueue, searchParams]);
+
+  useEffect(() => {
+    const address = searchParams.get("address");
+    const queue = searchParams.get("queue");
+    if (queue) {
+      fetchSchedulesByQueue({ queue });
+      address && setAddress(address);
+    } else if (address) {
+      setAddress(address);
+      getCloudFavorite(address).then((addr) => {
+        setIsCloudFavorite(!!addr);
+      });
+      fetchSchedulesByAddress({ address });
+    }
+  }, [user, searchParams, fetchSchedulesByAddress, fetchSchedulesByQueue]);
 
   return (
     <div>
@@ -129,14 +161,47 @@ export const Schedule = () => {
           <IconChevronLeft />
         </ActionIcon>
         <ModeSelector value={activeTab} setValue={setActiveTab} />
-        <ActionIcon
-          variant="default"
-          size="xl"
-          aria-label="Add to favorites"
-          onClick={toggleFavorites}
-        >
-          {isFavorite ? <IconStarFilled /> : <IconStar />}
-        </ActionIcon>
+
+        <Menu shadow="md" width={220}>
+          <Menu.Target>
+            <ActionIcon
+              variant="default"
+              size="xl"
+              aria-label="Add to favorites"
+            >
+              {isFavorite || isCloudFavorite ? (
+                <IconStarFilled />
+              ) : (
+                <IconStar />
+              )}
+            </ActionIcon>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Label>{t("save_address_label")}</Menu.Label>
+            <Menu.Item
+              leftSection={
+                <IconCloudStar style={{ width: rem(14), height: rem(14) }} />
+              }
+              disabled={!user}
+              onClick={toggleCloudFavorites}
+            >
+              {isCloudFavorite
+                ? t("remove_from_cloud_item")
+                : t("save_to_cloud_item")}
+            </Menu.Item>
+            <Menu.Item
+              leftSection={
+                <IconDevicesStar style={{ width: rem(14), height: rem(14) }} />
+              }
+              onClick={toggleLocalFavorites}
+            >
+              {isFavorite
+                ? t("remove_from_device_item")
+                : t("save_to_device_item")}
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       </Flex>
 
       <ScheduleView

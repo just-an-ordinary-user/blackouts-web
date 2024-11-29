@@ -14,5 +14,16 @@
     "tomorrow_label": "Завтра",
     "published_label": "Опубліковано",
     "required_field_label": "Поле {{field}} обов'язкове",
-    "queue": "Черга"
+    "queue_label": "Черга",
+    "device_label": "Пристрій",
+    "cloud_label": "Хмара",
+    "save_address_label": "Зберегти адресу",
+    "save_to_device_item": "Зберегти на пристрій",
+    "save_to_cloud_item": "Зберегти у хмарі",
+    "remove_from_device_item": "Видалити з пристрою",
+    "remove_from_cloud_item": "Видалити з хмари",
+    "login_success_title": "Вхід виконано успішно",
+    "login_failed_title": "Сталася помилка під час входу",
+    "logged_in_as_label": "Ви увійшли як",
+    "logout_item": "Вийти"
 }

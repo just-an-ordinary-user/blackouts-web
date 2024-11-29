@@ -6,6 +6,7 @@ import { ScheduleFormModal } from "../components/ScheduleFormModal";
 import { useScheduleFormModalStore } from "../stores/ScheduleFormModalStore.ts";
 import iconImg from "/icon.png";
 import { LanguageSelector } from "../components/LanguageSelector.tsx";
+import { GoogleAuth } from "../components/GoogleAuth.tsx";
 
 export const Root = () => {
   const { opened, open, close } = useScheduleFormModalStore();
@@ -18,7 +19,7 @@ export const Root = () => {
             <img src={iconImg} alt="logo" width={42} />
           </Link>
 
-          <div>
+          <Flex>
             <ActionIcon
               variant="default"
               size="xl"
@@ -30,7 +31,8 @@ export const Root = () => {
             </ActionIcon>
             <LanguageSelector />
             <ColorModeSwitcher />
-          </div>
+            <GoogleAuth />
+          </Flex>
         </Flex>
       </AppShell.Header>
       <AppShell.Main>

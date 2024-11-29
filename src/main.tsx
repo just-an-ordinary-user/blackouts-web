@@ -7,6 +7,9 @@ import { MantineProvider } from "@mantine/core";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./pages/router.tsx";
 import "./i18n.ts";
+import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 
 const queryClient = new QueryClient();
 
@@ -16,9 +19,12 @@ if (root) {
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <MantineProvider>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
+        <ModalsProvider>
+          <Notifications />
+          <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+          </QueryClientProvider>
+        </ModalsProvider>
       </MantineProvider>
     </React.StrictMode>,
   );

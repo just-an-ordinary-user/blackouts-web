@@ -14,5 +14,16 @@
     "tomorrow_label": "Tomorrow",
     "published_label": "Published at",
     "required_field_label": "Field {{field}} is required",
-    "queue": "Queue"
+    "queue_label": "Queue",
+    "device_label": "Device",
+    "cloud_label": "Cloud",
+    "save_address_label": "Save address",
+    "save_to_device_item": "Save to device",
+    "save_to_cloud_item": "Save to cloud",
+    "remove_from_device_item": "Remove from device",
+    "remove_from_cloud_item": "Remove from cloud",
+    "login_success_title": "Login success",
+    "login_failed_title": "Login failed",
+    "logged_in_as_label": "You logged in as",
+    "logout_item": "Logout"
 }
