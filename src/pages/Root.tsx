@@ -1,12 +1,13 @@
 import { Outlet, Link } from "react-router-dom";
 import { ActionIcon, AppShell, Flex } from "@mantine/core";
 import { IconChartDonutFilled } from "@tabler/icons-react";
-import { ColorModeSwitcher } from "../components/ColorModeSwitcher/ColorModeSwitcher";
+// import { ColorModeSwitcher } from "../components/ColorModeSwitcher/ColorModeSwitcher";
 import { ScheduleFormModal } from "../components/ScheduleFormModal";
 import { useScheduleFormModalStore } from "../stores/ScheduleFormModalStore.ts";
 import iconImg from "/icon.png";
-import { LanguageSelector } from "../components/LanguageSelector.tsx";
-import { GoogleAuth } from "../components/GoogleAuth.tsx";
+// import { LanguageSelector } from "../components/LanguageSelector.tsx";
+// import { GoogleAuth } from "../components/GoogleAuth.tsx";
+import { SettingsModal } from "../components/SettingsModal.tsx";
 
 export const Root = () => {
   const { opened, open, close } = useScheduleFormModalStore();
@@ -29,13 +30,14 @@ export const Root = () => {
             >
               <IconChartDonutFilled stroke={1.5} />
             </ActionIcon>
-            <LanguageSelector />
-            <ColorModeSwitcher />
-            <GoogleAuth />
+            {/* <LanguageSelector /> */}
+            {/* <ColorModeSwitcher /> */}
+            <SettingsModal />
+            {/* <GoogleAuth /> */}
           </Flex>
         </Flex>
       </AppShell.Header>
-      <AppShell.Main>
+      <AppShell.Main px={8}>
         <Outlet />
       </AppShell.Main>
       <ScheduleFormModal opened={opened} open={open} close={close} />

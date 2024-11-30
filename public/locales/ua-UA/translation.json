@@ -25,5 +25,12 @@
     "login_success_title": "Вхід виконано успішно",
     "login_failed_title": "Сталася помилка під час входу",
     "logged_in_as_label": "Ви увійшли як",
-    "logout_item": "Вийти"
+    "settings_title": "Налаштування",
+    "login_item": "Увійти",
+    "logout_item": "Вийти",
+    "lang_item": "Мова",
+    "color_scheme_item": "Кольорова схема",
+    "color_scheme_system_item": "Системна",
+    "color_scheme_dark_item": "Темна",
+    "color_scheme_light_item": "Світла"
 }

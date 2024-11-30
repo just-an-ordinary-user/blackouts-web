@@ -25,5 +25,12 @@
     "login_success_title": "Login success",
     "login_failed_title": "Login failed",
     "logged_in_as_label": "You logged in as",
-    "logout_item": "Logout"
+    "settings_title": "Settings",
+    "login_item": "Login",
+    "logout_item": "Logout",
+    "lang_item": "Language",
+    "color_scheme_item": "Color scheme",
+    "color_scheme_system_item": "System",
+    "color_scheme_dark_item": "Dark",
+    "color_scheme_light_item": "Light"
 }
