@@ -8,7 +8,9 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: "ua-UA",
+    fallbackLng: "ua",
+    supportedLngs: ["en", "uk"],
+    load: "languageOnly",
     debug: false,
     interpolation: {
       escapeValue: false,
@@ -19,5 +21,12 @@ i18n
       },
     },
   });
+
+i18n.on("languageChanged", (lng) => {
+  const normalizedLng = lng.split("-")[0]; // Strip the region code (e.g., 'en-US' -> 'en')
+  if (normalizedLng !== lng) {
+    i18n.changeLanguage(normalizedLng); // Change to normalized language
+  }
+});
 
 export default i18n;

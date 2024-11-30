@@ -84,7 +84,7 @@ export const Home = () => {
 
   return (
     <Flex direction="column">
-      <Title order={3} mb={8}>
+      <Title order={3} mb={8} mx={12}>
         {t("addresses_title")}
       </Title>
       <SegmentedControl

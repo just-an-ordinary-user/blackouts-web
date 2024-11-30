@@ -24,11 +24,11 @@ import { auth, provider } from "../firebase";
 
 // TODO: move it somewhere else
 const LANGUAGES: Record<string, { icon: string; label: string }> = {
-  "en-US": {
+  en: {
     icon: "https://flagsapi.com/US/flat/32.png",
     label: "English",
   },
-  "ua-UA": {
+  uk: {
     icon: "https://flagsapi.com/UA/flat/32.png",
     label: "Українська",
   },
