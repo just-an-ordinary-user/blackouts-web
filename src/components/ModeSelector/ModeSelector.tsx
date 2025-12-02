@@ -1,5 +1,5 @@
 import { Tabs } from "@mantine/core";
-import { IconChartPie, IconList, IconTable } from "@tabler/icons-react";
+import { IconChartPie, IconList } from "@tabler/icons-react";
 import type { FC } from "react";
 import classes from "./ModeSelector.module.css";
 

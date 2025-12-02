@@ -1,10 +1,11 @@
 import { Center, Flex, Text } from "@mantine/core";
-import { type FC, useEffect, useMemo } from "react";
+import type { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { normalizeScheduleData } from "../helpers/normalizeScheduleData";
-import { squeezeScheduleData } from "../helpers/squeezeScheduleData";
-import { getToday, getTomorrow } from "../helpers/time";
-import type { TQueueInSchedule, TSchedule } from "../types/Response";
+import type { TSchedule } from "../types/Response";
+// import { normalizeScheduleData } from "../helpers/normalizeScheduleData";
+// import { squeezeScheduleData } from "../helpers/squeezeScheduleData";
+// import { getToday, getTomorrow } from "../helpers/time";
+// import type { TQueueInSchedule, TSchedule } from "../types/Response";
 import type { TModeValue } from "./ModeSelector/ModeSelector";
 import { NoData } from "./NoData";
 import { ScheduleGraph } from "./Schedule/ScheduleGraph";
