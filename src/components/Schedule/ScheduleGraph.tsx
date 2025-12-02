@@ -1,7 +1,5 @@
 import { type FC, useMemo } from "react";
-import { Cell, Label, Pie, PieChart, Sector } from "recharts";
-import type { PieSectorDataItem } from "recharts/types/polar/Pie";
-import type { ActiveShape } from "recharts/types/util/types";
+import { Cell, Label, Pie, PieChart } from "recharts";
 import {
   complement_ranges,
   to_minutes,
@@ -10,36 +8,8 @@ import {
 import { getNow } from "../../helpers/time";
 import type { TQueueInSchedule } from "../../types/Response";
 
-const COLORS = ["#00C49F", "#ff5542", "#FFBB28"];
-const RADIAN = Math.PI / 180;
 const INNER_RADIUS = 60;
 const OUTER_RADIUS = 150;
-
-const renderActiveShape: ActiveShape<PieSectorDataItem & TQueueInSchedule> = ({
-  cx = 0,
-  cy = 0,
-  innerRadius = 0,
-  outerRadius = 0,
-  midAngle = 0,
-  startAngle,
-  endAngle,
-}: PieSectorDataItem & TQueueInSchedule) => {
-  const sin = Math.sin(-RADIAN * midAngle);
-  const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius - 135) * cos;
-  const sy = cy + (outerRadius - 135) * sin;
-  return (
-    <Sector
-      cx={sx}
-      cy={sy}
-      innerRadius={innerRadius}
-      outerRadius={outerRadius}
-      startAngle={startAngle}
-      endAngle={endAngle}
-      fill={COLORS[0]}
-    />
-  );
-};
 
 type TScheduleGraphProps = {
   data: TQueueInSchedule[];
@@ -99,7 +69,6 @@ export const ScheduleGraph: FC<TScheduleGraphProps> = ({
           startAngle={90}
           endAngle={-270}
           activeIndex={activeIndex}
-          activeShape={renderActiveShape as ActiveShape<PieSectorDataItem>}
           label={({ name, midAngle, cx, cy, percent, index }) => {
             const RAD = Math.PI / 180;
             if (percent < 0.1) {
@@ -115,6 +84,10 @@ export const ScheduleGraph: FC<TScheduleGraphProps> = ({
                   dominantBaseline="central"
                   fontSize={12}
                   fontWeight="bold"
+                  style={{
+                    textDecoration:
+                      activeIndex === index ? "underline" : "none",
+                  }}
                 >
                   {name}
                 </text>
@@ -133,6 +106,9 @@ export const ScheduleGraph: FC<TScheduleGraphProps> = ({
                 dominantBaseline="central"
                 fontWeight="bold"
                 fontSize={12}
+                style={{
+                  textDecoration: activeIndex === index ? "underline" : "none",
+                }}
               >
                 {name}
               </text>

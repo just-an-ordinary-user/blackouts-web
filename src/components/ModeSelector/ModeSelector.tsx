@@ -1,5 +1,5 @@
 import { Tabs } from "@mantine/core";
-import { IconChartPie, IconList } from "@tabler/icons-react";
+import { IconChartPie, IconList, IconTable } from "@tabler/icons-react";
 import type { FC } from "react";
 import classes from "./ModeSelector.module.css";
 
@@ -19,9 +19,9 @@ export const ModeSelector: FC<TModeSelectorProps> = ({ value, setValue }) => {
       classNames={classes}
     >
       <Tabs.List grow>
-        {/* <Tabs.Tab value="table">
+        <Tabs.Tab value="table">
           <IconTable width={18} height={18} />
-        </Tabs.Tab> */}
+        </Tabs.Tab>
         <Tabs.Tab value="pie">
           <IconChartPie width={18} height={18} />
         </Tabs.Tab>

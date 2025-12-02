@@ -2,14 +2,11 @@ import { Center, Flex, Text } from "@mantine/core";
 import type { FC } from "react";
 import { useTranslation } from "react-i18next";
 import type { TSchedule } from "../types/Response";
-// import { normalizeScheduleData } from "../helpers/normalizeScheduleData";
-// import { squeezeScheduleData } from "../helpers/squeezeScheduleData";
-// import { getToday, getTomorrow } from "../helpers/time";
-// import type { TQueueInSchedule, TSchedule } from "../types/Response";
 import type { TModeValue } from "./ModeSelector/ModeSelector";
 import { NoData } from "./NoData";
 import { ScheduleGraph } from "./Schedule/ScheduleGraph";
 import { ScheduleList } from "./Schedule/ScheduleList";
+import { ScheduleTable } from "./Schedule/ScheduleTable";
 
 type TScheduleViewProps = {
   address?: string;
@@ -34,6 +31,28 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
         <Center mt={8}>
           <Text size="xl">{address}</Text>
         </Center>
+      )}
+
+      {data?.length && activeView === "table" && (
+        <>
+          <ScheduleTable queue={queue} data={data[0].queues?.[queue]} />
+          <Center mt={8}>
+            <Text size="sm">
+              {t("published_label")}: {data[0].scheduleApprovedSince}
+            </Text>
+          </Center>
+
+          {data.length > 1 && (
+            <>
+              <ScheduleTable queue={queue} data={data[1].queues?.[queue]} />
+              <Center mt={8}>
+                <Text size="sm">
+                  {t("published_label")}: {data[1].scheduleApprovedSince}
+                </Text>
+              </Center>
+            </>
+          )}
+        </>
       )}
 
       {data?.length && (

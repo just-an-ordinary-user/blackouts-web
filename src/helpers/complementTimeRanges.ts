@@ -75,8 +75,6 @@ export function complement_ranges(ranges: { from: string; to: string }[]) {
     lastEnd = r.to;
   }
 
-  console.log(lastEnd, DAY);
-
   // Final gap to midnight
   if (lastEnd > 0 && lastEnd < DAY) {
     result.push({

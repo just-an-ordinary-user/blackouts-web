@@ -35,7 +35,7 @@ export const Schedule = () => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isCloudFavorite, setIsCloudFavorite] = useState<boolean>(false);
   const [address, setAddress] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<TModeValue>("list");
+  const [activeTab, setActiveTab] = useState<TModeValue>("table");
   const [queues, setQueues] = useState<string[]>([]);
   const [opened, { open, close }] = useDisclosure();
 
