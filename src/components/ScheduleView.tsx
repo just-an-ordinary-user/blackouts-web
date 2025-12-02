@@ -1,74 +1,31 @@
-import { useMemo, type FC } from "react";
-import type { TScheduleItem } from "../types/Response";
 import { Center, Flex, Text } from "@mantine/core";
+import { type FC, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { normalizeScheduleData } from "../helpers/normalizeScheduleData";
+import { squeezeScheduleData } from "../helpers/squeezeScheduleData";
+import { getToday, getTomorrow } from "../helpers/time";
+import type { TQueueInSchedule, TSchedule } from "../types/Response";
+import type { TModeValue } from "./ModeSelector/ModeSelector";
+import { NoData } from "./NoData";
 import { ScheduleGraph } from "./Schedule/ScheduleGraph";
 import { ScheduleList } from "./Schedule/ScheduleList";
-import { NoData } from "./NoData";
-import { getToday, getTomorrow } from "../helpers/time";
-import { squeezeScheduleData } from "../helpers/squeezeScheduleData";
-import { normalizeScheduleData } from "../helpers/normalizeScheduleData";
-import { useTranslation } from "react-i18next";
 
 type TScheduleViewProps = {
   address?: string;
   queue: number;
-  activeView: "full-graph" | "short-graph" | "short-list";
-  isDataSqueezed: boolean;
-  todayScheduleData?: TScheduleItem[];
-  tomorrowScheduleData?: TScheduleItem[];
+  activeView: TModeValue;
+  data?: TSchedule[];
   colorScheme: "dark" | "light";
-  isDataPresent: boolean;
-  todayPublishedAt?: string;
-  tomorrowPublishedAt?: string;
 };
 
 export const ScheduleView: FC<TScheduleViewProps> = ({
   address,
   queue,
   activeView,
-  isDataSqueezed,
-  todayScheduleData,
-  tomorrowScheduleData,
+  data,
   colorScheme,
-  isDataPresent,
-  todayPublishedAt,
-  tomorrowPublishedAt,
 }) => {
   const { t } = useTranslation();
-  const todayDate = getToday();
-  const tomorrowDate = getTomorrow();
-
-  const scheduleToday = useMemo(
-    () =>
-      todayScheduleData
-        ? isDataSqueezed
-          ? squeezeScheduleData(todayScheduleData).map((entry) => ({
-              ...entry,
-              value: entry.to - entry.from,
-            }))
-          : normalizeScheduleData(todayScheduleData).map((entry) => ({
-              ...entry,
-              value: 1,
-            }))
-        : [],
-    [todayScheduleData, isDataSqueezed],
-  );
-
-  const scheduleTomorrow = useMemo(
-    () =>
-      tomorrowScheduleData
-        ? isDataSqueezed
-          ? squeezeScheduleData(tomorrowScheduleData).map((entry) => ({
-              ...entry,
-              value: entry.to - entry.from,
-            }))
-          : normalizeScheduleData(tomorrowScheduleData).map((entry) => ({
-              ...entry,
-              value: 1,
-            }))
-        : [],
-    [tomorrowScheduleData, isDataSqueezed],
-  );
 
   return (
     <>
@@ -78,93 +35,85 @@ export const ScheduleView: FC<TScheduleViewProps> = ({
         </Center>
       )}
 
-      {isDataPresent && (
+      {data?.length && (
         <Flex direction="column" align="center">
-          {activeView !== "short-list" && (
+          {activeView === "pie" && (
             <>
               <Center mt={8}>
                 <Text size="xl">
-                  {t("today_label")}: {todayDate}
+                  {t("today_label")}: {data[0].eventDate}
                 </Text>
               </Center>
               <ScheduleGraph
-                data={scheduleToday}
+                data={data[0].queues?.[queue]}
                 markActive
-                showDurations={isDataSqueezed}
+                showDurations={true}
                 queue={queue}
                 colorScheme={colorScheme}
               />
-              {todayPublishedAt && (
-                <Center mt={8}>
-                  <Text size="sm">
-                    {t("published_label")}: {todayPublishedAt}
-                  </Text>
-                </Center>
-              )}
+              <Center mt={8}>
+                <Text size="sm">
+                  {t("published_label")}: {data[0].scheduleApprovedSince}
+                </Text>
+              </Center>
             </>
           )}
 
-          {activeView !== "short-list" && (
+          {activeView === "pie" && data.length > 1 && (
             <>
               <Center mt={32}>
                 <Text size="xl">
-                  {t("tomorrow_label")}: {tomorrowDate}
+                  {t("tomorrow_label")}: {data[1].eventDate}
                 </Text>
               </Center>
               <ScheduleGraph
-                data={scheduleTomorrow}
+                data={data[1].queues?.[queue]}
                 queue={queue}
-                showDurations={isDataSqueezed}
+                showDurations={true}
                 colorScheme={colorScheme}
               />
-              {tomorrowPublishedAt && (
-                <Center mt={8}>
-                  <Text size="sm">
-                    {t("published_label")}: {tomorrowPublishedAt}
-                  </Text>
-                </Center>
-              )}
+              <Center mt={8}>
+                <Text size="sm">
+                  {t("published_label")}: {data[1].scheduleApprovedSince}
+                </Text>
+              </Center>{" "}
             </>
           )}
 
-          {activeView === "short-list" && (
+          {activeView === "list" && (
             <>
               <Center mt={8}>
                 <Text size="xl">
-                  {t("today_label")}: {todayDate}
+                  {t("today_label")}: {data[0].eventDate}
                 </Text>
               </Center>
-              <ScheduleList data={scheduleToday} queue={queue} />
-              {todayPublishedAt && (
-                <Center mt={8}>
-                  <Text size="sm">
-                    {t("published_label")}: {todayPublishedAt}
-                  </Text>
-                </Center>
-              )}
+              <ScheduleList data={data[0].queues?.[queue]} queue={queue} />
+              <Center mt={8}>
+                <Text size="sm">
+                  {t("published_label")}: {data[0].scheduleApprovedSince}
+                </Text>
+              </Center>
             </>
           )}
 
-          {activeView === "short-list" && (
+          {activeView === "list" && data.length > 1 && (
             <>
               <Center mt={32}>
                 <Text size="xl">
-                  {t("tomorrow_label")}: {tomorrowDate}
+                  {t("tomorrow_label")}: {data[1].eventDate}
                 </Text>
               </Center>
-              <ScheduleList data={scheduleTomorrow} queue={queue} />
-              {tomorrowPublishedAt && (
-                <Center mt={8}>
-                  <Text size="sm">
-                    {t("published_label")}: {tomorrowPublishedAt}
-                  </Text>
-                </Center>
-              )}
+              <ScheduleList data={data[1].queues?.[queue]} queue={queue} />
+              <Center mt={8}>
+                <Text size="sm">
+                  {t("published_label")}: {data[1].scheduleApprovedSince}
+                </Text>
+              </Center>
             </>
           )}
         </Flex>
       )}
-      {!isDataPresent && <NoData text={t("no_data_for_address_label")} />}
+      {!data?.length && <NoData text={t("no_data_for_address_label")} />}
     </>
   );
 };

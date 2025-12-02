@@ -1,11 +1,12 @@
-import { useMemo, type FC } from "react";
-import type { TScheduleNormalizedItem } from "../../types/Response";
 import { Flex, Text } from "@mantine/core";
-import { NoData } from "../NoData";
+import { type FC, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { complement_ranges } from "../../helpers/complementTimeRanges";
+import type { TQueueInSchedule } from "../../types/Response";
+import { NoData } from "../NoData";
 
 type TScheduleList = {
-  data: TScheduleNormalizedItem[];
+  data: TQueueInSchedule[];
   queue: number;
 };
 
@@ -15,26 +16,14 @@ export const ScheduleList: FC<TScheduleList> = ({ data, queue }) => {
   const { t } = useTranslation();
   const availableData = useMemo(
     () =>
-      data
-        .filter(({ electricity }) => electricity === 0)
-        .map(({ hours }) => hours)
+      data &&
+      complement_ranges(data)
+        .map(({ from, to }) => `${from} - ${to}`)
         .join(", "),
     [data],
   );
   const unavailableData = useMemo(
-    () =>
-      data
-        .filter(({ electricity }) => electricity === 1)
-        .map(({ hours }) => hours)
-        .join(", "),
-    [data],
-  );
-  const undefinedData = useMemo(
-    () =>
-      data
-        .filter(({ electricity }) => electricity === 2)
-        .map(({ hours }) => hours)
-        .join(", "),
+    () => data.map(({ from, to }) => `${from} - ${to}`).join(", "),
     [data],
   );
 
@@ -57,13 +46,6 @@ export const ScheduleList: FC<TScheduleList> = ({ data, queue }) => {
               {unavailableData}
             </Text>
           </Flex>
-          {undefinedData.length > 0 && (
-            <Flex gap={8} justify="center">
-              <Text size="lg" style={{ color: COLORS[2], fontWeight: "bold" }}>
-                {undefinedData}
-              </Text>
-            </Flex>
-          )}
         </>
       )}
       {data?.length === 0 && <NoData text={t("no_data_for_period_label")} />}

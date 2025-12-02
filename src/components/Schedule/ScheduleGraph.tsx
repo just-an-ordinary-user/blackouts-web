@@ -1,88 +1,21 @@
-import type { TScheduleNormalizedItem } from "../../types/Response";
-import type { ActiveShape } from "recharts/types/util/types";
-import type { PieSectorDataItem } from "recharts/types/polar/Pie";
-import { useMemo, type FC } from "react";
+import { type FC, useMemo } from "react";
 import { Cell, Label, Pie, PieChart, Sector } from "recharts";
-import { NoData } from "../NoData";
-import { useTranslation } from "react-i18next";
-
-type TScheduleItemAdditionalFields = {
-  value: number;
-  isActive: boolean;
-  colorScheme: "dark" | "light";
-  showDurations: boolean;
-};
+import type { PieSectorDataItem } from "recharts/types/polar/Pie";
+import type { ActiveShape } from "recharts/types/util/types";
+import {
+  complement_ranges,
+  to_minutes,
+  to_range_minutes,
+} from "../../helpers/complementTimeRanges";
+import { getNow } from "../../helpers/time";
+import type { TQueueInSchedule } from "../../types/Response";
 
 const COLORS = ["#00C49F", "#ff5542", "#FFBB28"];
 const RADIAN = Math.PI / 180;
+const INNER_RADIUS = 60;
+const OUTER_RADIUS = 150;
 
-const renderCustomizedLabel = ({
-  cx = 0,
-  cy = 0,
-  midAngle = 0,
-  innerRadius = 0,
-  outerRadius = 0,
-  name,
-  value,
-  isActive,
-  showDurations,
-  colorScheme,
-}: PieSectorDataItem &
-  TScheduleNormalizedItem &
-  TScheduleItemAdditionalFields) => {
-  const radius1 =
-    innerRadius + (outerRadius - innerRadius) * (isActive ? 1 : 0.7);
-  const x1 = cx + radius1 * Math.cos(-midAngle * RADIAN);
-  const y1 = cy + radius1 * Math.sin(-midAngle * RADIAN);
-
-  const radius2 =
-    innerRadius + (outerRadius - innerRadius) * (isActive ? 0.5 : 0.25);
-  const x2 = cx + radius2 * Math.cos(-midAngle * RADIAN);
-  const y2 = cy + radius2 * Math.sin(-midAngle * RADIAN);
-
-  return (
-    <>
-      <text
-        x={x1}
-        y={y1}
-        style={{ pointerEvents: "none" }}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontWeight="bold"
-        fontSize={12}
-        fill={colorScheme === "dark" ? "white" : "black"}
-      >
-        {`${name}`}
-      </text>
-      {showDurations && (
-        <text
-          x={x2}
-          y={y2}
-          style={{ pointerEvents: "none" }}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fontWeight="bold"
-          fontSize={12}
-          fill={colorScheme === "dark" ? "white" : "black"}
-        >
-          {`${value}`}
-        </text>
-      )}
-    </>
-  );
-};
-
-type TScheduleProps = {
-  data: TScheduleNormalizedItem[];
-  queue: number;
-  colorScheme?: "dark" | "light";
-  markActive?: boolean;
-  showDurations?: boolean;
-};
-
-const renderActiveShape: ActiveShape<
-  PieSectorDataItem & TScheduleNormalizedItem
-> = ({
+const renderActiveShape: ActiveShape<PieSectorDataItem & TQueueInSchedule> = ({
   cx = 0,
   cy = 0,
   innerRadius = 0,
@@ -90,12 +23,11 @@ const renderActiveShape: ActiveShape<
   midAngle = 0,
   startAngle,
   endAngle,
-  electricity,
-}: PieSectorDataItem & TScheduleNormalizedItem) => {
+}: PieSectorDataItem & TQueueInSchedule) => {
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius - 150) * cos;
-  const sy = cy + (outerRadius - 150) * sin;
+  const sx = cx + (outerRadius - 135) * cos;
+  const sy = cy + (outerRadius - 135) * sin;
   return (
     <Sector
       cx={sx}
@@ -104,79 +36,123 @@ const renderActiveShape: ActiveShape<
       outerRadius={outerRadius}
       startAngle={startAngle}
       endAngle={endAngle}
-      fill={COLORS[electricity]}
+      fill={COLORS[0]}
     />
   );
 };
 
-export const ScheduleGraph: FC<TScheduleProps> = ({
+type TScheduleGraphProps = {
+  data: TQueueInSchedule[];
+  queue: number;
+  colorScheme?: "dark" | "light";
+  markActive?: boolean;
+  showDurations?: boolean;
+};
+
+export const ScheduleGraph: FC<TScheduleGraphProps> = ({
   data,
   queue,
-  colorScheme = "dark",
-  markActive = false,
-  showDurations = false,
+  markActive,
 }) => {
-  const { t } = useTranslation();
+  const COLORS = ["#00C49F", "#ff5542"];
+
+  const originalRanges = data;
+  const invertedRanges = complement_ranges(data);
+
+  const combined = [];
+  const maxLen = Math.max(originalRanges.length, invertedRanges.length);
+  for (let i = 0; i < maxLen; i++) {
+    if (originalRanges[i]) combined.push({ ...originalRanges[i], type: 1 });
+    if (invertedRanges[i]) combined.push({ ...invertedRanges[i], type: 0 });
+  }
+
+  const chartData = combined.map((r) => ({
+    name: `${r.from} - ${r.to}`,
+    value: to_range_minutes(r.from, r.to),
+    from: to_minutes(r.from),
+    to: to_minutes(r.to),
+    color: COLORS[r.type],
+  }));
+
   const activeIndex = useMemo(() => {
-    if (!markActive) {
+    if (!markActive || !chartData?.length) {
       return -1;
     }
-    const now = new Date().getHours();
-    return data.findIndex((item) => item.from <= now && now < item.to);
-  }, [data, markActive]);
 
-  //  TODO: come up with something better than just mess up with data
-  const schedule = useMemo(
-    () =>
-      data.map((entry, idx) => ({
-        ...entry,
-        isActive: idx === activeIndex,
-        showDurations,
-        colorScheme,
-      })),
-    [data, activeIndex, showDurations, colorScheme],
-  );
+    const now = getNow();
+
+    return chartData.findIndex((item) => item.from <= now && now < item.to);
+  }, [chartData, markActive]);
 
   return (
-    <div>
-      {schedule?.length > 0 && (
-        <PieChart width={380} height={380} style={{ outline: "none" }}>
-          <Pie
-            data={schedule}
-            cx="50%"
-            cy="50%"
-            innerRadius={70}
-            outerRadius={170}
-            labelLine={false}
-            stroke=""
-            dataKey="value"
-            nameKey="hours"
-            startAngle={90}
-            endAngle={-360}
-            paddingAngle={2}
-            label={renderCustomizedLabel}
-            activeIndex={activeIndex}
-            activeShape={renderActiveShape as ActiveShape<PieSectorDataItem>}
-            isAnimationActive={!!colorScheme}
-          >
-            {data.map((entry) => (
-              <Cell
-                key={`cell-${entry.hour}`}
-                fill={COLORS[entry.electricity]}
-              />
-            ))}
-            <Label
-              value={queue}
-              position="center"
-              fontSize={32}
-              fontWeight="bold"
-            />
-          </Pie>
-        </PieChart>
-      )}
-      {schedule?.length === 0 && (
-        <NoData text={t("no_data_for_period_label")} />
-      )}
+    <div className="p-4 w-full flex justify-center relative">
+      <PieChart width={380} height={380}>
+        <Pie
+          isAnimationActive={false}
+          data={chartData}
+          dataKey="value"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          outerRadius={OUTER_RADIUS}
+          innerRadius={INNER_RADIUS}
+          startAngle={90}
+          endAngle={-270}
+          activeIndex={activeIndex}
+          activeShape={renderActiveShape as ActiveShape<PieSectorDataItem>}
+          label={({ name, midAngle, cx, cy, percent, index }) => {
+            const RAD = Math.PI / 180;
+            if (percent < 0.1) {
+              const labelRadius = OUTER_RADIUS + 20;
+              const x = cx + labelRadius * Math.cos(-midAngle * RAD);
+              const y = cy + labelRadius * Math.sin(-midAngle * RAD);
+              return (
+                <text
+                  x={x}
+                  y={y}
+                  fill={chartData[index].color}
+                  textAnchor={x > cx ? "start" : "end"}
+                  dominantBaseline="central"
+                  fontSize={12}
+                  fontWeight="bold"
+                >
+                  {name}
+                </text>
+              );
+            }
+            // inside segment for larger slices
+            const r = INNER_RADIUS + (OUTER_RADIUS - INNER_RADIUS) / 2;
+            const x = cx + r * Math.cos(-midAngle * RAD);
+            const y = cy + r * Math.sin(-midAngle * RAD);
+            return (
+              <text
+                x={x}
+                y={y}
+                fill="#fff"
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontWeight="bold"
+                fontSize={12}
+              >
+                {name}
+              </text>
+            );
+          }}
+          labelLine={false}
+          stroke="#242424"
+          strokeWidth={3}
+        >
+          {chartData.map((entry) => (
+            <Cell key={entry.name} fill={entry.color} />
+          ))}
+          <Label
+            value={queue}
+            position="center"
+            fontSize={32}
+            fontWeight="bold"
+          />
+        </Pie>
+      </PieChart>
     </div>
   );
 };
