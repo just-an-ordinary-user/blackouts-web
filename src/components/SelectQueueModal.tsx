@@ -1,7 +1,7 @@
+import { Badge, Flex, Modal, Text } from "@mantine/core";
 import type { FC } from "react";
-import { Modal, Flex, Badge, Text } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 type TSelectQueueModalProps = {
   opened: boolean;
@@ -22,7 +22,7 @@ export const SelectQueueModal: FC<TSelectQueueModalProps> = ({
 
   function goToSchedule(queue: string) {
     close();
-    navigate(`/schedule?address=${address}&queue=${queue}`);
+    navigate(`/schedule?queue=${queue}`);
   }
   return (
     <Modal
