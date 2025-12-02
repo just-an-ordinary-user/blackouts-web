@@ -9,6 +9,7 @@
     "address_label": "Адреса",
     "nob_label": "№",
     "submit_button": "Знайти",
+    "clear_button": "Очистити",
     "multiple_queues_label": "Вказана адреса підпадає під кілька черг",
     "today_label": "Сьогодні",
     "tomorrow_label": "Завтра",

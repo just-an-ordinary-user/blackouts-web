@@ -1,5 +1,3 @@
-import { NoData } from "../components/NoData";
-import { IconChartDonutFilled, IconChevronRight } from "@tabler/icons-react";
 import {
   Box,
   Button,
@@ -8,16 +6,18 @@ import {
   SegmentedControl,
   Title,
 } from "@mantine/core";
+import { IconChartDonutFilled, IconChevronRight } from "@tabler/icons-react";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link, useLocation } from "react-router-dom";
+import { NoData } from "../components/NoData";
+import { auth } from "../firebase";
+import { useCloudFavorites } from "../hooks/useCloudFavorites";
 import { useFavorites } from "../hooks/useFavorites";
 import { useScheduleFormModalStore } from "../stores/ScheduleFormModalStore";
-import { Link, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useEffect, useMemo, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
 import { useUserStore } from "../stores/UserStore";
 import type { TStorageTab } from "../types/Storage";
-import { useCloudFavorites } from "../hooks/useCloudFavorites";
 
 export const Home = () => {
   const location = useLocation();
@@ -111,4 +111,4 @@ export const Home = () => {
   );
 };
 
-// TODO: implement icon or color selection and customizing address item for a more convenient search particular item
+// TODO: implement icon or color selection and customizing address item for a more convenient search for a particular item

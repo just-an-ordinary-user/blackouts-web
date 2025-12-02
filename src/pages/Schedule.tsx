@@ -71,24 +71,20 @@ export const Schedule = () => {
   const goBack = () => navigate("/");
 
   const queue = useMemo(() => {
-    const queue =
-      schedulesByQueueData?.current.queue ||
-      schedulesByAddressData?.current.queue ||
-      0;
-    const subqueue =
-      schedulesByQueueData?.current.subQueue ||
-      schedulesByAddressData?.current.subQueue ||
-      0;
+    const queueInQuery = searchParams.get("queue");
+    if (queueInQuery) return Number(queueInQuery);
+    const queue = schedulesByAddressData?.current.queue || 0;
+    const subqueue = schedulesByAddressData?.current.subQueue || 0;
 
     if (queue >= 0 && subqueue >= 0) {
       return queue + subqueue * 0.1;
     }
     return -1;
-  }, [schedulesByAddressData, schedulesByQueueData]);
+  }, [schedulesByAddressData]);
 
   const scheduleData = useMemo(() => {
     if (!queue) return;
-    return schedulesByAddressData?.schedule || schedulesByQueueData?.schedule;
+    return schedulesByAddressData?.schedule || schedulesByQueueData || [];
   }, [schedulesByAddressData, schedulesByQueueData, queue]);
 
   useEffect(() => {
@@ -155,6 +151,7 @@ export const Schedule = () => {
               variant="default"
               size="xl"
               aria-label="Add to favorites"
+              disabled={!address}
             >
               {isFavorite || isCloudFavorite ? (
                 <IconStarFilled />

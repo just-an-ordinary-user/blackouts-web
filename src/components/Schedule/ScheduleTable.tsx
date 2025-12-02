@@ -17,11 +17,13 @@ export const ScheduleTable: FC<TScheduleTable> = ({ data, queue }) => {
   const { t } = useTranslation();
   const availableData = useMemo(
     () =>
-      data && complement_ranges(data).map(({ from, to }) => `${from} - ${to}`),
+      data
+        ? complement_ranges(data).map(({ from, to }) => `${from} - ${to}`)
+        : [],
     [data],
   );
   const unavailableData = useMemo(
-    () => data.map(({ from, to }) => `${from} - ${to}`),
+    () => (data ? data.map(({ from, to }) => `${from} - ${to}`) : []),
     [data],
   );
 

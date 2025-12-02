@@ -1,22 +1,23 @@
-import type { TRequestScheduleByQueueBody } from "../types/Request";
-import type { TResponseData } from "../types/Response";
 import { useMutation } from "react-query";
+import type { TRequestScheduleByQueueBody } from "../types/Request";
+import type { TSchedule } from "../types/Response";
 
 export function useScheduleByQueue() {
   const { isLoading, error, data, mutate } = useMutation<
-    TResponseData,
+    TSchedule[],
     unknown,
     TRequestScheduleByQueueBody,
     unknown
   >("scheduleDataForQueue", ({ queue }) => {
-    return fetch("https://svitlo.oe.if.ua/GAVTurnOff/GavByQueue", {
-      method: "POST",
-      body: `{"queue":${queue}}`,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Host: "svitlo.oe.if.ua",
+    return fetch(
+      `https://be-svitlo.oe.if.ua/schedule-by-queue?queue=${queue}`,
+      {
+        method: "GET",
+        headers: {
+          Host: "svitlo.oe.if.ua",
+        },
       },
-    }).then((res) => res.json());
+    ).then((res) => res.json());
   });
 
   return {

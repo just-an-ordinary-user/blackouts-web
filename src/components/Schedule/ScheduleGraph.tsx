@@ -51,7 +51,10 @@ export const ScheduleGraph: FC<TScheduleGraphProps> = ({
 
     const now = getNow();
 
-    return chartData.findIndex((item) => item.from <= now && now < item.to);
+    return chartData.findIndex(
+      (item) =>
+        item.from <= now && now < (item.to < item.from ? 1440 : item.to),
+    );
   }, [chartData, markActive]);
 
   return (

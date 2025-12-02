@@ -1,14 +1,9 @@
-import type { FC } from "react";
-import { Modal, Button, TextInput, Flex } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useNavigate } from "react-router-dom";
+import { Modal, Tabs } from "@mantine/core";
+import { type FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-
-type TFormData = {
-  city: string;
-  address: string;
-  nob: string;
-};
+import { useNavigate } from "react-router-dom";
+import { AddressForm, type TAddressFormData } from "./GetDataForm/AddressForm";
+import { QueueForm, type TQueueFormData } from "./GetDataForm/QueueForm";
 
 type TScheduleFormModalProps = {
   opened: boolean;
@@ -22,28 +17,15 @@ export const ScheduleFormModal: FC<TScheduleFormModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const form = useForm({
-    mode: "uncontrolled",
-    initialValues: { city: "", address: "", nob: "" },
-    validate: {
-      city: (value) =>
-        !value.length
-          ? t("required_field_label", { field: t("city_label") })
-          : null,
-      address: (value) =>
-        !value.length
-          ? t("required_field_label", { field: t("address_label") })
-          : null,
-      nob: (value) =>
-        !value.length
-          ? t("required_field_label", { field: t("nob_label") })
-          : null,
-    },
-  });
+  const [activeTab, setActiveTab] = useState<"address" | "queue">("address");
 
-  function goToSchedule(data: TFormData) {
+  function handleSubmit(data: TAddressFormData & TQueueFormData) {
     close();
-    navigate(`/schedule?address=${Object.values(data).join(",")}`);
+    if ("queue" in data) {
+      navigate(`/schedule?queue=${data.queue}`);
+    } else {
+      navigate(`/schedule?address=${Object.values(data).join(",")}`);
+    }
   }
   return (
     <Modal
@@ -52,32 +34,18 @@ export const ScheduleFormModal: FC<TScheduleFormModalProps> = ({
       title={t("get_graphs_title")}
       transitionProps={{ transition: "slide-up" }}
     >
-      <form onSubmit={form.onSubmit(goToSchedule)}>
-        <TextInput
-          placeholder={t("city_label")}
-          key={form.key("city")}
-          {...form.getInputProps("city")}
-        />
-        <Flex gap={8}>
-          <TextInput
-            mt="sm"
-            style={{ width: "100%" }}
-            placeholder={t("address_label")}
-            key={form.key("address")}
-            {...form.getInputProps("address")}
-          />
-          <TextInput
-            mt="sm"
-            style={{ width: 120 }}
-            placeholder={t("nob_label")}
-            key={form.key("nob")}
-            {...form.getInputProps("nob")}
-          />
-        </Flex>
-        <Button type="submit" mt="sm">
-          {t("submit_button")}
-        </Button>
-      </form>
+      <Tabs
+        value={activeTab}
+        onChange={setActiveTab as (value: string | null) => void}
+        mb={16}
+      >
+        <Tabs.List grow>
+          <Tabs.Tab value="address">{t("address_label")}</Tabs.Tab>
+          <Tabs.Tab value="queue">{t("queue_label")}</Tabs.Tab>
+        </Tabs.List>
+      </Tabs>
+      {activeTab === "address" && <AddressForm onSubmit={handleSubmit} />}
+      {activeTab === "queue" && <QueueForm onSubmit={handleSubmit} />}
     </Modal>
   );
 };

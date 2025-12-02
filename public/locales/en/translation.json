@@ -9,6 +9,7 @@
     "address_label": "Address",
     "nob_label": "No",
     "submit_button": "Search",
+    "clear_button": "Clear",
     "multiple_queues_label": "There is multiple queues for address",
     "today_label": "Today",
     "tomorrow_label": "Tomorrow",
